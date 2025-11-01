@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Admin Dashboard - Feedback Collection System">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Dashboard - Feedback Collection System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="admin-body">
+
+    <!-- Login Modal - SHOWS FIRST -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="adminPassword">
+                            <i class="fas fa-key"></i> Enter Password
+                        </label>
+                        <input type="password" id="adminPassword" placeholder="Enter admin password" required autocomplete="off" autofocus>
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <!--<p class="hint">Default password: <strong>admin123</strong></p>-->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard - SHOWS AFTER LOGIN -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-comments"></i>
+                <h2>FeedbackHub</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#" data-section="dashboard">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-section="feedback">
+                            <i class="fas fa-comments"></i>
+                            <span>All Feedback</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-section="analytics">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="index.html">
+                            <i class="fas fa-home"></i>
+                            <span>User View</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn btn-danger btn-block">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button id="sidebarToggle" class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="top-bar-right">
+                    <button id="refreshBtn" class="icon-btn" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button id="adminThemeToggle" class="icon-btn" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="admin-profile">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="content-section active">
+                <div class="stats-container">
+                    <div class="stat-card-admin">
+                        <div class="stat-icon" style="background: #4CAF50;">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="adminTotalFeedback">0</h3>
+                            <p>Total Feedback</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-admin">
+                        <div class="stat-icon" style="background: #2196F3;">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="adminAvgRating">0.0</h3>
+                            <p>Average Rating</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-admin">
+                        <div class="stat-icon" style="background: #FF9800;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="adminPendingFeedback">0</h3>
+                            <p>Pending Reviews</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-admin">
+                        <div class="stat-icon" style="background: #9C27B0;">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3 id="adminHappyCustomers">0</h3>
+                            <p>Happy Customers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Rating Distribution</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="ratingPieChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Feedback by Category</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="feedbackBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-line"></i> Feedback Timeline</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-list"></i> Recent Feedback</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Rating</th>
+                                    <th>Category</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentFeedbackBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- All Feedback Section -->
+            <section id="feedbackSection" class="content-section">
+                <div class="section-actions">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="exportCsvBtn">
+                            <i class="fas fa-file-csv"></i> Export CSV
+                        </button>
+                        <button class="btn btn-danger" id="clearAllBtn">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+                <div class="admin-feedback-grid" id="adminFeedbackGrid"></div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analyticsSection" class="content-section">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3><i class="fas fa-list"></i> Category Breakdown</h3>
+                        <div class="category-stats" id="categoryStats"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3><i class="fas fa-smile"></i> Sentiment Analysis</h3>
+                        <div class="sentiment-display" id="sentimentDisplay"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3><i class="fas fa-trophy"></i> Top Rated Feedback</h3>
+                        <div id="topFeedbackList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settingsSection" class="content-section">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-database"></i> Data Management</h3>
+                        <div class="settings-actions">
+                            <button class="btn btn-secondary" id="exportDataBtn">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                            <button class="btn btn-secondary" id="importDataBtn">
+                                <i class="fas fa-upload"></i> Import Data
+                            </button>
+                            <input type="file" id="importFileInput" accept=".json" style="display: none;">
+                            <button class="btn btn-danger" id="resetDataBtn">
+                                <i class="fas fa-exclamation-triangle"></i> Reset Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- Reply Modal -->
+    <div id="replyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-reply"></i> Reply to Feedback</h2>
+            </div>
+            <div class="modal-body">
+                <div id="feedbackDetails"></div>
+                <form id="replyForm">
+                    <div class="form-group">
+                        <label for="replyText">Your Reply:</label>
+                        <textarea id="replyText" placeholder="Type your reply..." required maxlength="500"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('replyModal').style.display='none'">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Send Reply
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="adminToast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="adminToastMessage"></span>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/storage.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/feedback.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/admin.js"></script>
+
+</body>
+
+</html>
